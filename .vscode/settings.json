@@ -1,0 +1,32 @@
+{
+  "files.autoSave": "onFocusChange",
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "files.exclude": {
+    "out": true,
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/CVS": true,
+    "**/.DS_Store": true,
+    "**/Thumbs.db": true
+  },
+  "eslint.workingDirectories": [{ "mode": "auto" }],
+  "prettier.useEditorConfig": true,
+  "workbench.editor.enablePreview": false,
+  "cSpell.words": [
+    "edrpou",
+    "identifical",
+    "nestjs",
+    "PGADMIN",
+    "pinia",
+    "typeorm"
+  ],
+  "[ignore]": {
+    "editor.defaultFormatter": "foxundermoon.shell-format"
+  },
+  "editor.rulers": [80],
+  "[dotenv]": {
+    "editor.defaultFormatter": "foxundermoon.shell-format"
+  }
+}

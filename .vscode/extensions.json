@@ -1,3 +1,33 @@
 {
-  "recommendations": ["nrwl.angular-console", "esbenp.prettier-vscode"]
+  "recommendations": [
+    "EditorConfig.EditorConfig",
+    "esbenp.prettier-vscode",
+    "foxundermoon.shell-format",
+    "streetsidesoftware.code-spell-checker",
+    "VisualStudioExptTeam.vscodeintellicode",
+    "VisualStudioExptTeam.intellicode-api-usage-examples",
+    "christian-kohler.npm-intellisense",
+    "yzhang.markdown-all-in-one",
+    "DavidAnson.vscode-markdownlint",
+    "redhat.vscode-yaml",
+    "wayou.vscode-todo-highlight",
+    "Gruntfuggly.todo-tree",
+    "waderyan.gitblame",
+    "eamodio.gitlens",
+    "donjayamanne.githistory",
+    "codezombiech.gitignore",
+    "ms-azuretools.vscode-docker",
+    "dbaeumer.vscode-eslint",
+    "firsttris.vscode-jest-runner",
+    "ms-vscode.vscode-typescript-next",
+    "pmneo.tsimporter",
+    "Vue.vscode-typescript-vue-plugin",
+    "hollowtree.vue-snippets",
+    "Vue.volar",
+    "sdras.vue-vscode-snippets",
+    "ms-vscode.remote-explorer",
+    "ms-vscode-remote.remote-ssh",
+    "vscode-icons-team.vscode-icons",
+    "mikestead.dotenv"
+  ]
 }
