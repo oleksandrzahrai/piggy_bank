@@ -1,0 +1,38 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:15.2
+    ports:
+      - ${POSTGRES_PORT:?err}:5432
+    restart: always
+    environment:
+      - POSTGRES_HOST=localhost
+      - POSTGRES_DB=${POSTGRES_DB:?err}
+      - POSTGRES_USER=${POSTGRES_USER:?err}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:?err}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./.docker/postgres/create_schema.sql:/docker-entrypoint-initdb.d/create_schema.sql
+    networks:
+      - development_default
+  pgadmin:
+    image: dpage/pgadmin4:7.0
+    ports:
+      - ${PGADMIN_PORT:?err}:80
+    depends_on:
+      - postgres
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL:?err}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD:?err}
+      - PGADMIN_LISTEN_ADDRESS=0.0.0.0
+    restart: always
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    networks:
+      - development_default
+volumes:
+  postgres_data:
+  pgadmin_data:
+networks:
+  development_default:

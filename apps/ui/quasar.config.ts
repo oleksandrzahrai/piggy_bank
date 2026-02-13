@@ -59,7 +59,11 @@ export default defineConfig((/* ctx */) => {
       // polyfillModulePreload: true,
       // distDir
 
-      // extendViteConf (viteConf) {},
+      extendViteConf(viteConf) {
+        viteConf.server = viteConf.server || {};
+        viteConf.server.fs = viteConf.server.fs || {};
+        viteConf.server.fs.allow = ['../../'];
+      },
       // viteVuePluginOptions: {},
 
       vitePlugins: [
@@ -79,8 +83,13 @@ export default defineConfig((/* ctx */) => {
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/quasar-config-file#devserver
     devServer: {
-      // https: true,
-      open: true, // opens browser window automatically
+      open: true,
+      proxy: {
+        '/days': {
+          target: 'http://localhost:5000',
+          changeOrigin: true,
+        },
+      },
     },
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-file#framework
