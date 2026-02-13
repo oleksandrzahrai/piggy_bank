@@ -1,5 +1,8 @@
 {
   "compilerOptions": {
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    // "ignoreDeprecations": "5.0",
     "composite": true,
     "declarationMap": true,
     "emitDeclarationOnly": true,
@@ -14,7 +17,7 @@
     "skipLibCheck": true,
     "strict": true,
     "target": "es2022",
-    "customConditions": ["@piggy-bank/source"],
+    "baseUrl": ".",
     "paths": {
       "@ui/*": ["apps/ui/src/*"]
     }

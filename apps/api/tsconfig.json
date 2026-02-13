@@ -4,6 +4,7 @@
   "compilerOptions": {
     "module": "nodenext",
     "moduleResolution": "nodenext",
+    "customConditions": ["@piggy-bank/source"],
     "composite": true
   },
   "include": ["src/**/*.ts"],

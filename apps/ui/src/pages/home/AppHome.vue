@@ -48,17 +48,10 @@
 
     <div class="elementsList">
       <div class="elements">
-        <div v-for="day in days" :key="day" class="col-12 col-sm-6 col-md-4">
-          <q-card
-            :class="[
-              'element',
-              {
-                'has-value': findMoneyDay(day),
-              },
-            ]"
-          >
+        <div v-for="day in days" :key="day.dayNumber">
+          <q-card :class="['element', { 'has-value': day.isPaid }]">
             <q-card-section>
-              <div>{{ day }}</div>
+              <div>{{ day.dayNumber }}</div>
             </q-card-section>
           </q-card>
         </div>
@@ -69,23 +62,32 @@
 
 <script setup lang="ts">
 import type { Ref } from 'vue';
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useAppStore } from '../../stores/appStore';
+// import { Day } from '../../services/days';
+// import { store } from 'quasar/wrappers';
 
 const appStore = useAppStore();
 const tab = ref('hide');
-const days = appStore.days;
-const alreadyDepositedMoney = appStore.alreadyDepositedMoney;
+const days = computed(() => appStore.days);
 const prompt = ref(false);
 
+onMounted(async () => {
+  await appStore.getDays();
+  // console.log(JSON.stringify(appStore.days, null, 2));
+});
+
 const depositedMoney: Ref<number | null> = ref(null);
-// const alreadyDepositedMoney: Ref<number[]> = ref<number[]>([]);
 const distributedValue: Ref<number[]> = ref([]);
 
-const totalSum = computed(() => alreadyDepositedMoney.reduce((a: number, b: number) => a + b, 0));
+const totalSum = computed(() =>
+  appStore.days.filter((d) => d.isPaid).reduce((sum, d) => sum + d.dayNumber, 0),
+);
 
-const findMoneyDay = (day: number) => alreadyDepositedMoney.includes(day);
+// const findMoneyDay = (day: number) => appStore.days.find((d) => d.dayNumber === day)?.isPaid;
+
 const submitButton: Ref<boolean> = ref(false);
+
 const onDistributeClick = () => {
   distributedValue.value = [];
   submitButton.value = false;
@@ -96,7 +98,8 @@ const onDistributeClick = () => {
     return;
   }
 
-  const freeDays = days.filter((d: number) => !alreadyDepositedMoney.includes(d));
+  const freeDays = appStore.days.filter((day) => !day.isPaid).map((day) => day.dayNumber);
+
   const freeSet = new Set(freeDays);
 
   if (freeDays.length === 0) {
@@ -171,8 +174,9 @@ const onDistributeClick = () => {
   return distributedValue.value;
 };
 
-const onSubmit = () => {
-  appStore.addAlreadyDepositedMoney(...distributedValue.value);
+const onSubmit = async () => {
+  await appStore.addDays(distributedValue.value);
+  await appStore.getDays();
   distributedValue.value = [];
   submitButton.value = false;
   depositedMoney.value = null;
