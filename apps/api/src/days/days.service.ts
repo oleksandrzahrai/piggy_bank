@@ -14,18 +14,31 @@ export class DaysService {
   ) {}
 
   // створити 365 днів (запустити 1 раз)
-  async initDays() {
+  // async initDays() {
+  //   const count = await this.dayRepository.count();
+  //   if (count) return;
+
+  //   const days = Array.from({ length: 365 }, (_, i) =>
+  //     this.dayRepository.create({ dayNumber: i + 1 }),
+  //   );
+
+  //   await this.dayRepository.save(days);
+  // }
+
+  private async ensureDays() {
     const count = await this.dayRepository.count();
-    if (count) return;
+    if (count === 0) {
+      const days = Array.from({ length: 365 }, (_, i) =>
+        this.dayRepository.create({ dayNumber: i + 1 }),
+      );
 
-    const days = Array.from({ length: 365 }, (_, i) =>
-      this.dayRepository.create({ dayNumber: i + 1 }),
-    );
-
-    await this.dayRepository.save(days);
+      await this.dayRepository.save(days);
+    }
   }
 
   async day(amount: number[]) {
+    await this.ensureDays();
+
     const now = new Date();
 
     await this.dayRepository.update(
@@ -40,6 +53,7 @@ export class DaysService {
   }
 
   async getAll(): Promise<Day[]> {
+    await this.ensureDays();
     return this.dayRepository.find({ order: { dayNumber: 'ASC' } });
   }
 

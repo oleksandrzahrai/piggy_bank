@@ -18,14 +18,14 @@ import { ApiTags } from '@nestjs/swagger';
 export class DaysController {
   constructor(private readonly daysService: DaysService) {}
 
-  @Post('init')
-  async init() {
-    const days = await this.daysService.initDays();
-    return {
-      statusCode: HttpStatus.OK,
-      data: { days },
-    };
-  }
+  // @Post('init')
+  // async init() {
+  //   const days = await this.daysService.ensureDays();
+  //   return {
+  //     statusCode: HttpStatus.OK,
+  //     data: { days },
+  //   };
+  // }
 
   @Post()
   async day(@Body() data: CreateDayDto) {
