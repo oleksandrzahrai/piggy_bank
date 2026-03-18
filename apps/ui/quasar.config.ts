@@ -86,7 +86,7 @@ export default defineConfig((/* ctx */) => {
       open: true,
       proxy: {
         '/days': {
-          target: 'http://localhost:5000',
+          target: `http://localhost:${process.env.SERVER_PORT}`,
           changeOrigin: true,
         },
       },

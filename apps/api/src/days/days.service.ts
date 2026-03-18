@@ -13,18 +13,6 @@ export class DaysService {
     private dayRepository: Repository<DayEntity>,
   ) {}
 
-  // створити 365 днів (запустити 1 раз)
-  // async initDays() {
-  //   const count = await this.dayRepository.count();
-  //   if (count) return;
-
-  //   const days = Array.from({ length: 365 }, (_, i) =>
-  //     this.dayRepository.create({ dayNumber: i + 1 }),
-  //   );
-
-  //   await this.dayRepository.save(days);
-  // }
-
   private async ensureDays() {
     const count = await this.dayRepository.count();
     if (count === 0) {
@@ -48,7 +36,6 @@ export class DaysService {
         paidAt: now,
       },
     );
-
     return true;
   }
 
