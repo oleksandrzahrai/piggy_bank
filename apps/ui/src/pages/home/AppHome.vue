@@ -23,26 +23,39 @@
 
     <q-btn class="card-btn" label="Внести" @click="prompt = true" />
 
-    <q-dialog v-model="prompt" persistent>
+    <q-dialog v-if="!confirmDialog" v-model="prompt" persistent>
       <q-card class="dialog-card">
         <q-card-section>
           <div class="text-h6">Внесіть суму</div>
         </q-card-section>
         <q-form @submit="onSubmit">
           <q-card-section class="q-pt-none">
-            <q-input dense v-model="depositedMoney" autofocus />
-            <div v-if="distributedValue.length">
-              Будуть використані дні:
-              {{ distributedValue.join(', ') }}
-            </div>
+            <q-input
+              dense
+              type="number"
+              v-model="depositedMoney"
+              autofocus
+              :rules="[(val) => (val && val > 0) || 'Введіть, будь ласка, число більше 0']"
+            />
           </q-card-section>
 
           <q-card-actions align="right">
             <q-btn label="Відміна" v-close-popup />
-            <q-btn v-if="!submitButton" label="Розподілити" @click="onDistributeClick" />
-            <q-btn v-else type="submit" label="Зберегти" v-close-popup />
+            <q-btn label="Розподілити" @click="onDistributeClick" />
           </q-card-actions>
         </q-form>
+      </q-card>
+    </q-dialog>
+    <q-dialog v-model="confirmDialog">
+      <q-card class="dialog-card">
+        <q-card-section>
+          Будуть використані дні:
+          {{ distributedValue.join(', ') }}
+        </q-card-section>
+        <q-card-actions>
+          <q-btn flat label="Відміна" v-close-popup />
+          <q-btn flat label="Зберегти" @click="onSubmit" />
+        </q-card-actions>
       </q-card>
     </q-dialog>
 
@@ -64,8 +77,6 @@
 import type { Ref } from 'vue';
 import { computed, onMounted, ref } from 'vue';
 import { useAppStore } from '../../stores/appStore';
-// import { Day } from '../../services/days';
-// import { store } from 'quasar/wrappers';
 
 const appStore = useAppStore();
 const tab = ref('hide');
@@ -74,7 +85,6 @@ const prompt = ref(false);
 
 onMounted(async () => {
   await appStore.getDays();
-  // console.log(JSON.stringify(appStore.days, null, 2));
 });
 
 const depositedMoney: Ref<number | null> = ref(null);
@@ -84,13 +94,11 @@ const totalSum = computed(() =>
   appStore.days.filter((d) => d.isPaid).reduce((sum, d) => sum + d.dayNumber, 0),
 );
 
-// const findMoneyDay = (day: number) => appStore.days.find((d) => d.dayNumber === day)?.isPaid;
-
-const submitButton: Ref<boolean> = ref(false);
+const confirmDialog: Ref<boolean> = ref(false);
 
 const onDistributeClick = () => {
   distributedValue.value = [];
-  submitButton.value = false;
+  confirmDialog.value = false;
   const value = Number(depositedMoney.value);
 
   if (!value || value <= 0) {
@@ -110,7 +118,7 @@ const onDistributeClick = () => {
   // 1 ЧИСЛО
   if (freeSet.has(value)) {
     distributedValue.value.push(value);
-    submitButton.value = true;
+    confirmDialog.value = true;
     depositedMoney.value = null;
     return;
   }
@@ -122,7 +130,7 @@ const onDistributeClick = () => {
     if (b !== a && freeSet.has(b)) {
       distributedValue.value.push(a, b);
       console.log('Розкладено на 2 числа:', [a, b]);
-      submitButton.value = true;
+      confirmDialog.value = true;
       depositedMoney.value = null;
       return;
     }
@@ -138,7 +146,7 @@ const onDistributeClick = () => {
       if (c !== a && c !== b && freeSet.has(c)) {
         distributedValue.value.push(a, b, c);
         console.log('Розкладено на 3 числа:', [a, b, c]);
-        submitButton.value = true;
+        confirmDialog.value = true;
         depositedMoney.value = null;
         return;
       }
@@ -169,7 +177,7 @@ const onDistributeClick = () => {
 
   depositedMoney.value = null;
   if (distributedValue.value.length > 0) {
-    submitButton.value = true;
+    confirmDialog.value = true;
   }
   return distributedValue.value;
 };
@@ -178,7 +186,7 @@ const onSubmit = async () => {
   await appStore.addDays(distributedValue.value);
   await appStore.getDays();
   distributedValue.value = [];
-  submitButton.value = false;
+  confirmDialog.value = false;
   depositedMoney.value = null;
   prompt.value = false;
 };
@@ -193,17 +201,13 @@ const onSubmit = async () => {
   margin: 2em auto;
 }
 .my-card {
-  /* margin: 2em auto; */
   padding: var(--gap);
   border-radius: 20px;
   background: #532997;
-  /* width: 90%; */
 }
 
 .card-btn {
-  /* width: 90%; */
   height: 60px;
-  /* margin: 2em auto; */
 
   background: white;
   border: 3px solid #532997;
